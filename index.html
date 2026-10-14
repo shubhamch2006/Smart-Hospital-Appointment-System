@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Moscow Hospital | Appointment & Emergency Care</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="navbar">
+  <div class="logo"><span>✚</span> MOSCOW <b>HOSPITAL</b></div>
+  <nav>
+    <a href="#home">Home</a><a href="#doctors">Doctors</a><a href="#appointment">Appointment</a>
+    <a href="#ambulance">Ambulance</a><a href="#feedback">Feedback</a><a href="#contact">Contact</a>
+  </nav>
+  <div class="nav-actions">
+    <a class="auth-btn signin-btn" href="#signin" id="openSignIn">Sign In</a>
+    <a class="auth-btn signup-btn" href="#signup" id="openSignUp">Sign Up</a>
+    <a class="emergency-mini" href="tel:+911080">Emergency</a>
+  </div>
+</header>
+
+<main>
+<section id="home" class="hero">
+  <div class="hero-content">
+    <p class="eyebrow">TRUSTED HEALTHCARE • 24/7 SUPPORT</p>
+    <h1>Your Health,<br><span>Our Priority.</span></h1>
+    <p class="hero-text">Book an appointment with qualified doctors, check availability and get quick access to emergency services.</p>
+    <div class="hero-buttons">
+      <a class="btn primary" href="#appointment">Book Appointment →</a>
+      <a class="btn outline" href="#doctors">Meet Our Doctors</a>
+    </div>
+    <div class="trust-row"><span>✓ Qualified Doctors</span><span>✓ Easy Booking</span><span>✓ Emergency Care</span></div>
+  </div>
+  <div class="hero-card">
+    <div class="pulse">♥</div>
+    <h3>Healthcare made simple</h3>
+    <p>Choose your doctor, select a convenient slot and receive an instant appointment confirmation.</p>
+    <div class="stats"><div><strong>24/7</strong><small>Emergency</small></div><div><strong>12+</strong><small>Doctors</small></div><div><strong>6</strong><small>Departments</small></div></div>
+  </div>
+</section>
+
+<section class="features">
+  <div><span>🩺</span><h3>Expert Doctors</h3><p>Qualified professionals across multiple specialties.</p></div>
+  <div><span>📅</span><h3>Easy Appointment</h3><p>Book your preferred doctor and time slot online.</p></div>
+  <div><span>🚑</span><h3>Emergency Service</h3><p>Check ambulance status and contact emergency care.</p></div>
+  <div><span>⭐</span><h3>Quick Feedback</h3><p>Share your experience in just a few seconds.</p></div>
+</section>
+
+<section id="doctors" class="section">
+  <div class="section-heading"><div><p class="eyebrow">OUR SPECIALISTS</p><h2>Meet Our Doctors</h2></div><p>Experienced healthcare professionals dedicated to patient care.</p></div>
+  <div class="doctor-grid" id="doctorGrid"></div>
+</section>
+
+<section id="appointment" class="section booking-section">
+  <div class="section-heading"><div><p class="eyebrow">ONLINE BOOKING</p><h2>Book Your Appointment</h2></div><p>Select a doctor and an available time slot that suits you.</p></div>
+  <div class="booking-layout">
+    <form id="appointmentForm" class="form-card">
+      <div class="form-row"><label>Patient Name<input id="patientName" required placeholder="Enter full name"></label><label>Age<input id="age" type="number" min="1" max="120" required placeholder="Age"></label></div>
+      <div class="form-row"><label>Mobile Number<input id="mobile" required pattern="[0-9]{10}" placeholder="10-digit mobile number"></label><label>Department<select id="department" required></select></label></div>
+      <label>Select Doctor<select id="doctor" required></select></label>
+      <label>Appointment Date<input id="date" type="date" required></label>
+      <label>Available Time Slot</label>
+      <div id="slots" class="slots"></div>
+      <label>Reason / Message<textarea id="reason" rows="3" placeholder="Briefly describe your reason for visit"></textarea></label>
+      <button class="btn primary full" type="submit">Confirm Appointment</button>
+      <p id="bookingMessage" class="message"></p>
+    </form>
+    <div class="appointment-info">
+      <div class="info-box"><span>01</span><div><h3>Choose a doctor</h3><p>Review qualifications and specialty before booking.</p></div></div>
+      <div class="info-box"><span>02</span><div><h3>Select a time</h3><p>Only the displayed demo slots can be selected.</p></div></div>
+      <div class="info-box"><span>03</span><div><h3>Get confirmation</h3><p>Your appointment ID will be generated instantly.</p></div></div>
+      <div class="notice">ℹ <b>Demo project:</b> Appointment data is stored in this browser only. A real hospital system should use a secure backend and database.</div>
+    </div>
+  </div>
+</section>
+
+<section id="availability" class="section light">
+  <div class="section-heading"><div><p class="eyebrow">TODAY'S SCHEDULE</p><h2>Doctor Availability</h2></div><p>Demo availability for the hospital's departments.</p></div>
+  <div class="availability-grid" id="availabilityGrid"></div>
+</section>
+
+<section id="ambulance" class="section ambulance-section">
+  <div class="ambulance-content"><p class="eyebrow">EMERGENCY SERVICES</p><h2>Ambulance Availability</h2><p>For a real emergency, contact your local emergency service immediately. This demo shows sample ambulance status.</p><a class="btn white" href="tel:108">🚑 Call Emergency • 108</a></div>
+  <div class="ambulance-board"><div class="amb-row"><b>Ambulance 01</b><span class="available">● AVAILABLE</span></div><div class="amb-row"><b>Ambulance 02</b><span class="busy">● ON TRIP</span></div><div class="amb-row"><b>Ambulance 03</b><span class="available">● AVAILABLE</span></div></div>
+</section>
+
+<section id="feedback" class="section">
+  <div class="feedback-card">
+    <div><p class="eyebrow">YOUR EXPERIENCE MATTERS</p><h2>Quick Feedback</h2><p>Tell us how your experience was. Your feedback helps improve our service.</p></div>
+    <form id="feedbackForm"><div class="stars" id="stars"><button type="button" data-rating="1">★</button><button type="button" data-rating="2">★</button><button type="button" data-rating="3">★</button><button type="button" data-rating="4">★</button><button type="button" data-rating="5">★</button></div><input id="feedbackName" required placeholder="Your name"><textarea id="feedbackText" required rows="3" placeholder="Write your feedback..."></textarea><button class="btn primary" type="submit">Submit Feedback</button><p id="feedbackMessage" class="message"></p></form>
+  </div>
+</section>
+
+<section id="contact" class="section contact">
+  <div class="section-heading"><div><p class="eyebrow">GET IN TOUCH</p><h2>Contact Moscow Hospital</h2></div></div>
+  <div class="contact-grid"><div><span>📍</span><h3>Address</h3><p>123 Healthcare Avenue, City Centre<br>Your City, India</p></div><div><span>📞</span><h3>Phone</h3><p>+91 00000 00000<br>Emergency: 108</p></div><div><span>✉️</span><h3>Email</h3><p>info@moscowhospital.example<br>support@moscowhospital.example</p></div><div><span>🕐</span><h3>Hours</h3><p>OPD: 8:00 AM – 8:00 PM<br>Emergency: 24/7</p></div></div>
+</section>
+</main>
+
+<footer><div class="logo">✚ MOSCOW <b>HOSPITAL</b></div><p>Compassionate care. Professional service. Better health.</p><p>© 2026 Moscow Hospital • College Project Demo</p></footer>
+<div id="modal" class="modal"><div class="modal-box"><button id="closeModal" class="close">×</button><div class="success-icon">✓</div><h2>Appointment Confirmed!</h2><p id="confirmation"></p><button class="btn primary" id="printBtn">Print Confirmation</button></div></div>
+<div id="authModal" class="auth-modal" aria-hidden="true">
+  <div class="auth-panel" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+    <button type="button" id="closeAuth" class="auth-close" aria-label="Close">×</button>
+    <div class="auth-brand"><span>✚</span> MOSCOW <b>HOSPITAL</b></div>
+    <p class="eyebrow" id="authEyebrow">WELCOME BACK</p>
+    <h2 id="authTitle">Sign in to your account</h2>
+    <p class="auth-intro">Manage your hospital appointments with ease.</p>
+    <div class="auth-tabs">
+      <button type="button" id="signInTab" class="auth-tab active">Sign In</button>
+      <button type="button" id="signUpTab" class="auth-tab">Sign Up</button>
+    </div>
+    <form id="signInForm" class="auth-form">
+      <label>Email address<input type="email" id="signInEmail" placeholder="you@example.com" required></label>
+      <label>Password<input type="password" id="signInPassword" placeholder="Enter your password" required minlength="6"></label>
+      <button type="submit" class="btn primary full">Sign In</button>
+    </form>
+    <form id="signUpForm" class="auth-form" hidden>
+      <label>Full name<input type="text" id="signUpName" placeholder="Enter your full name" required></label>
+      <label>Email address<input type="email" id="signUpEmail" placeholder="you@example.com" required></label>
+      <label>Create password<input type="password" id="signUpPassword" placeholder="At least 6 characters" required minlength="6"></label>
+      <button type="submit" class="btn primary full">Create Account</button>
+    </form>
+    <p id="authMessage" class="auth-message" role="status"></p>
+    <p class="auth-disclaimer">Demo interface only. Secure sign-in requires a backend and database.</p>
+  </div>
+</div>
+<script src="js/script.js"></script>
+</body>
+</html>
