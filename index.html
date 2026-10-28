@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Moscow Hospital | Appointment & Emergency Care</title>
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/emergency.css">
+  <link rel="stylesheet" href="css/animations.css">
 </head>
 <body>
 <header class="navbar">
@@ -16,7 +18,7 @@
   <div class="nav-actions">
     <a class="auth-btn signin-btn" href="#signin" id="openSignIn">Sign In</a>
     <a class="auth-btn signup-btn" href="#signup" id="openSignUp">Sign Up</a>
-    <a class="emergency-mini" href="tel:+911080">Emergency</a>
+    <button type="button" class="emergency-mini" id="openEmergency" data-open-emergency aria-haspopup="dialog">🚨 Emergency</button>
   </div>
 </header>
 
@@ -81,7 +83,7 @@
 </section>
 
 <section id="ambulance" class="section ambulance-section">
-  <div class="ambulance-content"><p class="eyebrow">EMERGENCY SERVICES</p><h2>Ambulance Availability</h2><p>For a real emergency, contact your local emergency service immediately. This demo shows sample ambulance status.</p><a class="btn white" href="tel:108">🚑 Call Emergency • 108</a></div>
+  <div class="ambulance-content"><p class="eyebrow">EMERGENCY SERVICES</p><h2>Ambulance Availability</h2><p>For a real emergency, contact your local emergency service immediately. This demo shows sample ambulance status.</p><a class="btn white" href="tel:108">🚑 Call Emergency • 108</a> <button type="button" class="btn em-red" data-open-emergency>📍 Share my location</button></div>
   <div class="ambulance-board"><div class="amb-row"><b>Ambulance 01</b><span class="available">● AVAILABLE</span></div><div class="amb-row"><b>Ambulance 02</b><span class="busy">● ON TRIP</span></div><div class="amb-row"><b>Ambulance 03</b><span class="available">● AVAILABLE</span></div></div>
 </section>
 
@@ -115,6 +117,7 @@
       <label>Email address<input type="email" id="signInEmail" placeholder="you@example.com" required></label>
       <label>Password<input type="password" id="signInPassword" placeholder="Enter your password" required minlength="6"></label>
       <button type="submit" class="btn primary full">Sign In</button>
+      <div class="auth-switch"><button type="button" id="goSignUp" class="create-account-btn">Create an account <span aria-hidden="true">→</span></button></div>
     </form>
     <form id="signUpForm" class="auth-form" hidden>
       <label>Full name<input type="text" id="signUpName" placeholder="Enter your full name" required></label>
@@ -126,6 +129,35 @@
     <p class="auth-disclaimer">Demo interface only. Secure sign-in requires a backend and database.</p>
   </div>
 </div>
+<div id="emModal" class="em-modal" aria-hidden="true">
+  <div class="em-panel" role="dialog" aria-modal="true" aria-labelledby="emTitle">
+    <button type="button" id="emClose" class="em-close" aria-label="Close">×</button>
+    <div class="em-head"><span class="em-siren">🚨</span><div><p class="eyebrow">EMERGENCY ASSIST</p><h2 id="emTitle">Share your live location with the hospital</h2></div></div>
+    <div id="emStatus" class="em-status" role="status" aria-live="polite"></div>
+    <div id="emMapWrap" class="em-map" hidden><iframe id="emMap" title="Map showing your current location" loading="lazy"></iframe></div>
+    <div id="emCoords" class="em-coords" hidden></div>
+    <div class="em-fields">
+      <label class="wide">What is the emergency? (optional)
+        <select id="emType"><option value="">Not specified</option><option>Chest pain / heart</option><option>Accident / injury</option><option>Breathing difficulty</option><option>Stroke symptoms</option><option>Pregnancy / delivery</option><option>Child emergency</option><option>Other</option></select></label>
+      <label>Your name (optional)<input id="emName" autocomplete="name" placeholder="Name"></label>
+      <label>Mobile (optional)<input id="emPhone" type="tel" inputmode="numeric" autocomplete="tel" maxlength="10" placeholder="10-digit number"></label>
+    </div>
+    <div class="em-actions">
+      <button type="button" id="emSend" class="btn em-send" disabled>Send my location to hospital</button>
+      <a id="emCall" class="btn em-call" href="tel:108">📞 Call 108</a>
+      <button type="button" id="emRetry" class="btn outline" hidden>Retry location</button>
+    </div>
+    <div id="emSent" class="em-sent" hidden></div>
+    <div id="emBackup" class="em-backup" hidden>
+      <a id="emWhatsApp" class="btn outline" href="#" target="_blank" rel="noopener" hidden>Send via WhatsApp</a>
+      <button type="button" id="emShare" class="btn outline">Share / copy location link</button>
+    </div>
+    <p class="em-privacy">🔒 Your location is shared only when you tap Send, and only used to direct help to you. In a life-threatening emergency, always call too.</p>
+  </div>
+</div>
+<script src="js/config.js"></script>
 <script src="js/script.js"></script>
+<script src="js/emergency.js"></script>
+<script src="js/animations.js"></script>
 </body>
 </html>

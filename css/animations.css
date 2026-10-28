@@ -1,0 +1,62 @@
+/* ===== Smooth transitions: pop-ups, buttons ===== */
+:root{--ease-out:cubic-bezier(.22,1,.36,1);--ease-soft:cubic-bezier(.4,0,.2,1)}
+
+/* ---- Pop-ups (Sign In / Sign Up / Emergency / Appointment confirmation) ----
+   They stay in the layout and fade + slide instead of popping in with display:none. */
+.auth-modal,.em-modal,.modal{
+  display:flex;opacity:0;visibility:hidden;pointer-events:none;
+  transition:opacity .35s var(--ease-soft),visibility 0s linear .35s,backdrop-filter .35s var(--ease-soft);
+  backdrop-filter:blur(0)}
+.auth-modal.show,.em-modal.show,.modal.show{
+  opacity:1;visibility:visible;pointer-events:auto;
+  transition:opacity .35s var(--ease-soft),visibility 0s,backdrop-filter .35s var(--ease-soft);
+  backdrop-filter:blur(5px)}
+
+.auth-panel,.em-panel,.modal-box{
+  transform:translateY(34px) scale(.95);opacity:0;
+  transition:transform .45s var(--ease-out),opacity .3s var(--ease-soft)}
+.auth-modal.show .auth-panel,.em-modal.show .em-panel,.modal.show .modal-box{
+  transform:none;opacity:1;transition-delay:.05s}
+
+/* Emergency modal gets a slightly more urgent entrance + one gentle red glow */
+.em-modal.show .em-panel{animation:emGlow 1.2s var(--ease-soft) .2s 1}
+@keyframes emGlow{0%{box-shadow:0 24px 80px rgba(8,40,60,.35),0 0 0 0 rgba(232,93,93,.45)}100%{box-shadow:0 24px 80px rgba(8,40,60,.35),0 0 0 26px rgba(232,93,93,0)}}
+.em-modal.show .em-siren{display:inline-block;animation:sirenWiggle .9s var(--ease-soft) .25s 1}
+@keyframes sirenWiggle{0%,100%{transform:rotate(0)}20%{transform:rotate(-14deg)}40%{transform:rotate(12deg)}60%{transform:rotate(-8deg)}80%{transform:rotate(5deg)}}
+
+/* Content that appears inside the pop-ups fades up smoothly */
+.em-map:not([hidden]),.em-coords:not([hidden]),.em-sent:not([hidden]),.em-backup:not([hidden]),.em-status{animation:fadeUp .45s var(--ease-out) both}
+.auth-form:not([hidden]){animation:fadeUp .4s var(--ease-out) both}
+.auth-message:not(:empty){animation:fadeUp .3s var(--ease-out) both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.auth-tab{transition:background .25s var(--ease-soft),color .25s var(--ease-soft),box-shadow .25s var(--ease-soft)}
+.auth-panel h2,.auth-eyebrow,#authEyebrow{transition:opacity .2s}
+
+/* ---- Header buttons: press feedback + click ripple ---- */
+.auth-btn,.emergency-mini{position:relative;overflow:hidden;
+  transition:transform .25s var(--ease-out),box-shadow .25s var(--ease-soft),background-color .25s var(--ease-soft),color .25s var(--ease-soft)}
+.auth-btn:hover,.emergency-mini:hover{transform:translateY(-2px)}
+.auth-btn:active,.emergency-mini:active{transform:scale(.95)}
+.ripple{position:absolute;border-radius:50%;pointer-events:none;background:currentColor;opacity:.28;transform:scale(0);animation:ripple .65s var(--ease-soft) forwards}
+.signup-btn .ripple,.emergency-mini .ripple{background:#fff;opacity:.4}
+@keyframes ripple{to{transform:scale(1);opacity:0}}
+
+/* ---- "Create an account" button inside the Sign In pop-up ---- */
+.auth-switch{display:flex;justify-content:flex-end;margin-top:14px}
+.create-account-btn{position:relative;overflow:hidden;cursor:pointer;display:inline-flex;align-items:center;gap:8px;
+  background:#fff;color:#159a8c;border:1.5px solid #159a8c;border-radius:10px;padding:11px 18px;font:700 14px 'DM Sans',sans-serif;
+  transition:background-color .25s var(--ease-soft),color .25s var(--ease-soft),transform .25s var(--ease-out),box-shadow .25s var(--ease-soft)}
+.create-account-btn span{display:inline-block;transition:transform .3s var(--ease-out)}
+.create-account-btn:hover{background:#159a8c;color:#fff;box-shadow:0 8px 20px rgba(21,154,140,.3);transform:translateY(-2px)}
+.create-account-btn:hover span{transform:translateX(4px)}
+.create-account-btn:active{transform:scale(.96)}
+.create-account-btn:focus-visible{outline:3px solid #123a5a;outline-offset:2px}
+.create-account-btn:hover .ripple{background:#fff}
+
+/* ---- Respect users who prefer reduced motion ---- */
+@media(prefers-reduced-motion:reduce){
+  .auth-modal,.em-modal,.modal,.auth-modal.show,.em-modal.show,.modal.show{transition:opacity .15s linear,visibility 0s}
+  .auth-panel,.em-panel,.modal-box{transform:none;transition:opacity .15s linear}
+  .em-modal.show .em-panel,.em-modal.show .em-siren,.ripple,.auth-form:not([hidden]),.em-map:not([hidden]),.em-coords:not([hidden]),.em-sent:not([hidden]),.em-backup:not([hidden]),.em-status{animation:none}
+  .auth-btn:hover,.emergency-mini:hover,.create-account-btn:hover{transform:none}
+}

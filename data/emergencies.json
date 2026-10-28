@@ -1,0 +1,107 @@
+[
+ {
+  "id": "EMG-L00OHS1X",
+  "status": "new",
+  "createdAt": "2026-10-26T15:27:57.504Z",
+  "track": [
+   {
+    "lat": 23.033048,
+    "lng": 72.65820275,
+    "t": "2026-10-26T15:27:57.504Z"
+   }
+  ],
+  "name": "Ragesh",
+  "phone": "8128748274",
+  "type": "Breathing difficulty",
+  "locationAvailable": true,
+  "lat": 23.033048,
+  "lng": 72.65820275,
+  "accuracy": 381,
+  "updatedAt": "2026-10-26T15:27:57.504Z"
+ },
+ {
+  "id": "EMG-LIANPI1G",
+  "status": "new",
+  "createdAt": "2026-10-26T15:21:29.731Z",
+  "track": [
+   {
+    "lat": 23.0338791,
+    "lng": 72.65367190000002,
+    "t": "2026-10-26T15:21:29.731Z"
+   }
+  ],
+  "name": "Ragesh",
+  "phone": "8128748274",
+  "type": "Breathing difficulty",
+  "locationAvailable": true,
+  "lat": 23.0338791,
+  "lng": 72.65367190000002,
+  "accuracy": 203,
+  "updatedAt": "2026-10-26T15:21:29.731Z"
+ },
+ {
+  "id": "EMG-8DZGLPL1",
+  "status": "new",
+  "createdAt": "2026-10-26T15:20:34.057Z",
+  "track": [
+   {
+    "lat": 23.032062400000004,
+    "lng": 72.6567048,
+    "t": "2026-10-26T15:20:34.057Z"
+   },
+   {
+    "lat": 23.0338791,
+    "lng": 72.65367190000002,
+    "t": "2026-10-26T15:21:05.052Z"
+   }
+  ],
+  "name": "Ragesh",
+  "phone": "8128748274",
+  "type": "Chest pain / heart",
+  "locationAvailable": true,
+  "lat": 23.0338791,
+  "lng": 72.65367190000002,
+  "accuracy": 203,
+  "updatedAt": "2026-10-26T15:21:05.052Z"
+ },
+ {
+  "id": "EMG-S1KKQHLI",
+  "status": "new",
+  "createdAt": "2026-10-26T15:18:36.919Z",
+  "track": [
+   {
+    "lat": 23.03224871784021,
+    "lng": 72.65670960636137,
+    "t": "2026-10-26T15:18:36.919Z"
+   }
+  ],
+  "name": "shivam",
+  "phone": "8897866558",
+  "type": "Accident / injury",
+  "locationAvailable": true,
+  "lat": 23.03224871784021,
+  "lng": 72.65670960636137,
+  "accuracy": 154,
+  "updatedAt": "2026-10-26T15:18:36.919Z"
+ },
+ {
+  "id": "EMG-QPD6VM1L",
+  "status": "resolved",
+  "createdAt": "2026-10-26T15:17:48.550Z",
+  "track": [
+   {
+    "lat": 23.033087,
+    "lng": 72.658275,
+    "t": "2026-10-26T15:17:48.550Z"
+   }
+  ],
+  "name": "shivam",
+  "phone": "8897866558",
+  "type": "Accident / injury",
+  "locationAvailable": true,
+  "lat": 23.033087,
+  "lng": 72.658275,
+  "accuracy": 500,
+  "updatedAt": "2026-10-26T15:19:16.973Z"
+ }
+]

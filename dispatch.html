@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Emergency Dispatch | Moscow Hospital</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',system-ui,sans-serif;background:#f1f6f8;color:#17324d;line-height:1.5}
+header{background:#123a5a;color:#fff;padding:16px 5%;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+header h1{font-size:19px}header small{color:#9fc0d3;display:block;font-size:12px}
+.tools{display:flex;gap:10px;align-items:center;font-size:12px}
+.tools button{background:#159a8c;color:#fff;border:0;border-radius:8px;padding:8px 12px;font-weight:700;cursor:pointer}
+main{padding:22px 5%;display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
+.empty{grid-column:1/-1;text-align:center;color:#6f8797;padding:60px 0}
+.card{background:#fff;border-radius:14px;padding:18px;border:1px solid #dce8ed;border-left:6px solid #9bb7c6}
+.card.new{border-left-color:#e85d5d;animation:flash 1.6s infinite}
+.card.acknowledged{border-left-color:#e0a030}.card.dispatched{border-left-color:#2f7fd1}.card.resolved{border-left-color:#159a8c;opacity:.65}
+@keyframes flash{50%{box-shadow:0 0 0 6px #e85d5d22}}
+.row{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+.id{font-weight:800;font-size:15px}.badge{font-size:11px;font-weight:800;border-radius:20px;padding:3px 10px;background:#eef3f6;text-transform:uppercase}
+.new .badge{background:#fdecec;color:#c43c3c}.acknowledged .badge{background:#fff4dc;color:#8a6410}.dispatched .badge{background:#e3f0fc;color:#1c5fa8}.resolved .badge{background:#e8f8f5;color:#0f6f65}
+.meta{font-size:13px;color:#4c6575;margin:10px 0}.meta b{color:#123a5a}
+.type{display:inline-block;background:#fdecec;color:#a63a3a;border-radius:6px;padding:2px 8px;font-size:12px;font-weight:700;margin-bottom:6px}
+.nolock{color:#a63a3a;font-weight:700}
+.actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}
+.actions a,.actions button{font:700 12px system-ui,sans-serif;border:1px solid #c9dae2;background:#fff;color:#17324d;border-radius:8px;padding:8px 11px;cursor:pointer;text-decoration:none}
+.actions .nav{background:#159a8c;color:#fff;border-color:#159a8c}
+.src{font-size:12px;color:#9fc0d3}
+</style>
+</head>
+<body>
+<header>
+  <div><h1>🚨 Emergency Dispatch</h1><small>Moscow Hospital – live patient locations</small></div>
+  <div class="tools"><span class="src" id="src">connecting…</span><button id="soundBtn" type="button">🔔 Enable alert sound</button></div>
+</header>
+<main id="list"><div class="empty">No emergency alerts yet. This screen refreshes automatically.</div></main>
+<script src="js/config.js"></script>
+<script>
+const CFG = window.MOSCOW_CONFIG || {};
+const list = document.getElementById("list"), srcEl = document.getElementById("src");
+let key = sessionStorage.getItem("dispatchKey") || "", mode = "server", known = new Set(), first = true, soundOn = false, ctx = null;
+
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const ago = iso => { const s = Math.max(0, (Date.now() - new Date(iso)) / 1000); return s < 60 ? Math.round(s) + "s ago" : s < 3600 ? Math.round(s / 60) + " min ago" : Math.round(s / 3600) + " h ago"; };
+function km(a, b, c, d) { const r = x => x * Math.PI / 180, h = Math.sin(r(c - a) / 2) ** 2 + Math.cos(r(a)) * Math.cos(r(c)) * Math.sin(r(d - b) / 2) ** 2; return 12742 * Math.asin(Math.sqrt(h)); }
+
+function beep() {
+  if (!soundOn) return;
+  try { const o = ctx.createOscillator(), g = ctx.createGain(); o.connect(g); g.connect(ctx.destination); o.frequency.value = 880; g.gain.value = .15; o.start(); o.stop(ctx.currentTime + .5); } catch (_) {}
+}
+document.getElementById("soundBtn").onclick = e => { ctx = ctx || new (window.AudioContext || window.webkitAudioContext)(); soundOn = true; e.target.textContent = "🔔 Sound on"; beep(); };
+
+async function load() {
+  try {
+    const r = await fetch("/api/emergencies", { headers: key ? { "x-dispatch-key": key } : {}, cache: "no-store" });
+    if (r.status === 401) { key = prompt("Enter dispatch key:") || ""; sessionStorage.setItem("dispatchKey", key); return; }
+    if (!r.ok) throw 0;
+    mode = "server"; srcEl.textContent = "● live (server)"; return await r.json();
+  } catch (_) {
+    mode = "local"; srcEl.textContent = "● demo mode (this browser only)";
+    try { return JSON.parse(localStorage.getItem("moscow_emergencies") || "[]"); } catch (_) { return []; }
+  }
+}
+
+async function setStatus(id, status) {
+  if (mode === "server") {
+    await fetch("/api/emergencies/" + encodeURIComponent(id), { method: "PATCH", headers: { "Content-Type": "application/json", "x-dispatch-key": key }, body: JSON.stringify({ status }) });
+  } else {
+    const l = JSON.parse(localStorage.getItem("moscow_emergencies") || "[]"), a = l.find(x => x.id === id);
+    if (a) { a.status = status; localStorage.setItem("moscow_emergencies", JSON.stringify(l)); }
+  }
+  refresh();
+}
+
+function render(items) {
+  if (!items.length) { list.innerHTML = '<div class="empty">No emergency alerts yet. This screen refreshes automatically.</div>'; return; }
+  const order = { new: 0, acknowledged: 1, dispatched: 2, resolved: 3 };
+  items = [...items].sort((a, b) => order[a.status] - order[b.status] || new Date(b.updatedAt) - new Date(a.updatedAt));
+  list.innerHTML = items.map(a => {
+    const loc = a.lat != null && a.lng != null;
+    let dist = "";
+    if (loc && CFG.hospitalLat != null) { const d = km(CFG.hospitalLat, CFG.hospitalLng, a.lat, a.lng); dist = `<br><b>Distance from hospital:</b> ${d.toFixed(1)} km (~${Math.max(1, Math.round(d / 35 * 60))} min by road, rough estimate)`; }
+    const dest = loc ? `https://www.google.com/maps/dir/?api=1&destination=${a.lat},${a.lng}&travelmode=driving` : "";
+    return `<div class="card ${esc(a.status)}">
+      <div class="row"><span class="id">${esc(a.id)}</span><span class="badge">${esc(a.status)}</span></div>
+      <div class="meta">
+        ${a.type ? `<span class="type">${esc(a.type)}</span><br>` : ""}
+        <b>Patient:</b> ${esc(a.name) || "—"}<br>
+        <b>Phone:</b> ${a.phone ? `<a href="tel:${esc(a.phone)}">${esc(a.phone)}</a>` : "—"}<br>
+        ${loc ? `<b>Location:</b> ${a.lat.toFixed(5)}, ${a.lng.toFixed(5)} (± ${esc(a.accuracy ?? "?")} m)${dist}`
+              : '<span class="nolock">No location shared – call the patient for their address</span>'}<br>
+        <b>Updated:</b> ${esc(ago(a.updatedAt))} • <b>First alert:</b> ${esc(ago(a.createdAt))}
+      </div>
+      <div class="actions">
+        ${loc ? `<a class="nav" href="${dest}" target="_blank" rel="noopener">🧭 Navigate to patient</a>` : ""}
+        ${a.status === "new" ? `<button data-id="${esc(a.id)}" data-s="acknowledged">Acknowledge</button>` : ""}
+        ${a.status === "new" || a.status === "acknowledged" ? `<button data-id="${esc(a.id)}" data-s="dispatched">Ambulance dispatched</button>` : ""}
+        ${a.status !== "resolved" ? `<button data-id="${esc(a.id)}" data-s="resolved">Resolve</button>` : ""}
+      </div></div>`;
+  }).join("");
+}
+list.addEventListener("click", e => { const b = e.target.closest("button[data-id]"); if (b) setStatus(b.dataset.id, b.dataset.s); });
+
+async function refresh() {
+  const items = await load(); if (!items) return;
+  const fresh = items.filter(a => a.status === "new" && !known.has(a.id));
+  items.forEach(a => known.add(a.id));
+  if (fresh.length && !first) beep();
+  first = false; render(items);
+}
+refresh(); setInterval(refresh, 3000);
+window.addEventListener("storage", refresh);
+</script>
+</body>
+</html>
